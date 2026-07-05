@@ -38,16 +38,35 @@ app.use(express.json());
 // MySQL connection pool setup
 
 const pool = mysql.createPool({
+// ILAGAY MO ITO PAGKATAPOS NG const pool = ...
+async function initDatabase() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS players (
+        uuid VARCHAR(255) PRIMARY KEY,
+        username VARCHAR(255) NOT NULL,
+        kills INT DEFAULT 0,
+        deaths INT DEFAULT 0,
+        online BOOLEAN DEFAULT TRUE,
+        last_seen DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log("Database table 'players' is ready!");
+  } catch (err) {
+    console.error("Error creating table:", err);
+  }
+}
+initDatabase(); // Tawagin natin agad para siguradong may table
 
-  host: process.env.DB_HOST || "localhost",
+  host: process.env.DB_HOST || "mysql.railway.internal",
 
   port: process.env.DB_PORT || 3306,
 
   user: process.env.DB_USER || "root",
 
-  password: process.env.DB_PASSWORD || "", 
+  password: process.env.DB_PASSWORD || "GUaxtPvjIlfvpuQFzyDEkdxDxVBdakXV", 
 
-  database: process.env.DB_NAME || "kill_leaderboard",
+  database: process.env.DB_NAME || "railway",
 
   waitForConnections: true,
 
